@@ -1,0 +1,29 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE & Editor files
+.vscode/
+.idea/
+.DS_Store
+
+# Machine Learning models & large data
+*.pkl
+*.h5
+*.onnx
+*.pt
+*.bin
+data/*.csv
+data/*.zip
+
+# Logs & temp files
+*.log
+.pytest_cache/
