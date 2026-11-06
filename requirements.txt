@@ -1,9 +1,10 @@
 fastapi==0.110.0
 uvicorn==0.27.0
-pydantic
+pydantic==2.6.0
 numpy==2.0.2
-pandas
-scikit-learn
+pandas==2.2.3
+scikit-learn==1.6.1
 folium==0.15.1
-pytest
-httpx
+pytest==9.2.0
+httpx==0.28.1
+starlette==0.36.3
