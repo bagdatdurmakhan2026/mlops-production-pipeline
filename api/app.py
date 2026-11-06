@@ -13,7 +13,9 @@ MODEL_PATH = BASE_DIR / "model.pkl"
 try:
     with open(MODEL_PATH, "rb") as f:
         model = pickle.load(f)
-except Exception:
+    print("Модель успешно загружена!")
+except Exception as e:
+    print(f"ОШИБКА при загрузке модели: {e}")
     model = None
 
 class RestaurantFeatures(BaseModel):

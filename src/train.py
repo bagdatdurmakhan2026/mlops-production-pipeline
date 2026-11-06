@@ -3,6 +3,9 @@ import pandas as pd
 import pickle
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.model_selection import train_test_split
+from pathlib import Path
+ROOT_DIR = Path(__file__).resolve().parent.parent
+model_path = ROOT_DIR / "model.pkl"
 
 def train_model():
     # Создаем демонстрационный датасет ресторанов для обучения
