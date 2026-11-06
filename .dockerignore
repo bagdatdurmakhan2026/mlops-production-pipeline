@@ -1,0 +1,7 @@
+data/
+tests/
+.git/
+.gitignore
+__pycache__/
+*.pyc
+*.pkl
