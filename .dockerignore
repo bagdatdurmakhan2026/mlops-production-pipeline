@@ -1,6 +1,7 @@
-data/
-tests/
-.git/
-.gitignore
-__pycache__/
+__pycache__
 *.pyc
+.git
+.github
+venv/
+env/
+.pytest_cache

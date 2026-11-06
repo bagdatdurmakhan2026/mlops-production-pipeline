@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from api.app import app
 
-client = TestClient(app)
+client = TestClient(app) # явно передаем через app=app
 
 def test_healthz():
     response = client.get("/healthz")
