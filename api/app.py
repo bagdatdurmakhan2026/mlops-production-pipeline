@@ -1,13 +1,17 @@
 import pickle
 import numpy as np
+from pathlib import Path
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 app = FastAPI(title="Restaurant Rating MLOps API")
 
-# Загружаем сохраненную модель при старте приложения
+# Path(__file__).resolve().parent.parent указывает на корень проекта
+BASE_DIR = Path(__file__).resolve().parent.parent
+MODEL_PATH = BASE_DIR / "model.pkl"
+
 try:
-    with open("model.pkl", "rb") as f:
+    with open(MODEL_PATH, "rb") as f:
         model = pickle.load(f)
 except Exception:
     model = None
