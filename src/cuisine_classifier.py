@@ -5,15 +5,25 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils.class_weight import compute_sample_weight
+from pathlib import Path
+
+# Находим корень проекта
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_DATA_PATH = ROOT_DIR / "data" / "zomato.csv.zip"
 
 class CuisineClassifier:
-    def __init__(self, data_path="data/zomato.csv.zip"):
+    def __init__(self, data_path=None):
+        if data_path is None:
+            data_path = DEFAULT_DATA_PATH
+        else:
+            data_path = Path(data_path)
+            
         print("Загрузка данных...")
         try:
             self.df = pd.read_csv(data_path, compression='zip')
         except Exception:
             self.df = pd.read_csv(data_path, compression='zip', encoding='latin-1')
-            
+
         self.le = LabelEncoder()
         self.model = HistGradientBoostingClassifier(random_state=42)
 
