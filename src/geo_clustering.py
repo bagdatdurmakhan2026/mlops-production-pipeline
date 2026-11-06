@@ -22,6 +22,11 @@ class GeoAnalyzer:
         except Exception:
             self.df = pd.read_csv(data_path, compression='zip', encoding='latin-1')
 
+        # <-- СЮДА ВСТАВЛЯЕМ НАШИ КОММЕНТАРИИ И PRINT -->
+        # Демонстрационный модуль геоаналитики: генерация синтетических GPS-координат 
+        # вокруг центра Бангалора для визуализации кластеров DBSCAN и экспорта в Folium.
+        print("Инициализация GeoAnalyzer: используются синтетические координаты для демонстрации DBSCAN.")
+
     def preprocess_and_mock_geo(self):
         print("Очистка и генерация GPS-координат для локаций...")
         # Убираем пустые локации и дубликаты ресторанов

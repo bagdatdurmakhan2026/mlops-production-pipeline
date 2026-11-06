@@ -5,13 +5,16 @@ client = TestClient(app)
 
 def test_healthz():
     response = client.get("/healthz")
-    # Проверяем, что эндпоинт отдает успешный статус или 503 (если модель не в памяти во время теста)
-    assert response.status_code in [200, 503]
+    assert response.status_code == 200
     data = response.json()
-    assert "status" in data or "detail" in data
+    # Проверяем наличие статуса и то, что модель загружена
+    assert "status" in data
+    assert data.get("model_loaded") is True
 
-def test_predict_endpoint_structure():
-    # Проверяем валидацию входных данных для /predict
-    response = client.post("/predict", json={"features": [100.0, 1500.0]})
-    # Даже если модель вызвана, проверим что API принимает правильный формат
-    assert response.status_code in [200, 503]
+def test_predict():
+    # Передаем ровно 2 признака, которые ожидает модель
+    payload = {"features": [1200.0, 4.1]}
+    response = client.post("/predict", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "prediction" in data or "predicted_rating" in data

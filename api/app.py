@@ -10,7 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MODEL_PATH = BASE_DIR / "model.pkl"
 
 model = None
+from pydantic import BaseModel, Field
+from typing import List
 
+class PredictionInput(BaseModel):
+    # Ограничиваем ожидаемое количество признаков (например, ровно 3 признака: cost, rate, votes)
+    features: List[float] = Field(..., min_items=3, max_items=3, description="Список из 3 признаков: [cost, rate, votes]")
 # Загружаем модель при старте приложения
 try:
     with open(MODEL_PATH, "rb") as f:
