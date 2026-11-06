@@ -4,4 +4,3 @@ tests/
 .gitignore
 __pycache__/
 *.pyc
-*.pkl

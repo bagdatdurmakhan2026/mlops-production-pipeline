@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import pickle
 from pathlib import Path
+from typing import List
 
 app = FastAPI(title="MLOps Production Pipeline", version="1.0.0")
 
@@ -10,12 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MODEL_PATH = BASE_DIR / "model.pkl"
 
 model = None
-from pydantic import BaseModel, Field
-from typing import List
 
-class PredictionInput(BaseModel):
-    # Ограничиваем ожидаемое количество признаков (например, ровно 3 признака: cost, rate, votes)
-    features: List[float] = Field(..., min_items=3, max_items=3, description="Список из 3 признаков: [cost, rate, votes]")
 # Загружаем модель при старте приложения
 try:
     with open(MODEL_PATH, "rb") as f:
@@ -25,8 +21,12 @@ except Exception as e:
     print(f"ОШИБКА при загрузке модели: {e}")
 
 class PredictionInput(BaseModel):
-    features: list[float]
-
+    features: List[float] = Field(
+        ..., 
+        min_length=2, 
+        max_length=2, 
+        description="Список ровно из 2 признаков: [votes, approx_cost]"
+    )
 @app.get("/healthz", status_code=status.HTTP_200_OK)
 def health_check():
     """Эндпоинт для проверки здоровья сервиса (liveness/readiness probe)"""
