@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
 
 class RestaurantRecommender:
     def __init__(self, data_path="data/zomato.csv.zip"):
@@ -48,19 +49,41 @@ class RestaurantRecommender:
         
         # Выводим инфу по найденным рекомендациям
         return self.df.iloc[top_indices][['name', 'location', 'rate', 'approx_cost(for two people)']]
+    def fit_kmeans(self, n_clusters=5):
+        print(f"Разбиваем рестораны на {n_clusters} кластеров через K-Means...")
+        # Инициализируем и обучаем K-Means
+        self.kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+        self.kmeans.fit(self.scaled_data)
+        
+        # Записываем номер кластера для каждого ресторана прямо в датафрейм
+        self.df['cluster'] = self.kmeans.labels_
+        
+    def get_cluster_sample(self, cluster_id, sample_size=5):
+        # Вытаскиваем случайные рестораны из нужного кластера, чтобы посмотреть, кто там обитает
+        cluster_data = self.df[self.df['cluster'] == cluster_id]
+        return cluster_data[['name', 'location', 'rate', 'approx_cost(for two people)']].head(sample_size)
 
 if __name__ == "__main__":
     recommender = RestaurantRecommender()
     recommender.preprocess()
-    recommender.fit()
     
-    # Возьмем ресторан под индексом 10 для теста
+    # 1. Тестируем Cosine Similarity
+    recommender.fit()
     target_idx = 10
     target_rest = recommender.df.iloc[target_idx]
     
     print(f"\n🎯 ИЩЕМ ПОХОЖИЕ НА: {target_rest['name']}")
-    print(f"Локация: {target_rest['location']} | Рейтинг: {target_rest['rate']} | Чек: {target_rest['approx_cost(for two people)']}")
+    print(f"Чек: {target_rest['approx_cost(for two people)']} | Рейтинг: {target_rest['rate']}")
+    print("\n✅ РЕКОМЕНДАЦИИ (Cosine):")
+    print(recommender.recommend(target_idx).to_string(index=False))
     
-    recommendations = recommender.recommend(target_idx)
-    print("\n✅ РЕКОМЕНДАЦИИ:")
-    print(recommendations.to_string(index=False))
+    # 2. Тестируем K-Means
+    print("\n" + "="*50 + "\n")
+    recommender.fit_kmeans(n_clusters=5)
+    
+    # Узнаем, в какой кластер попал наш таргет
+    target_cluster = recommender.df.iloc[target_idx]['cluster']
+    print(f"\nНаш ресторан '{target_rest['name']}' попал в Кластер №{target_cluster}")
+    
+    print(f"\n✅ ДРУГИЕ РЕСТОРАНЫ ИЗ КЛАСТЕРА №{target_cluster}:")
+    print(recommender.get_cluster_sample(target_cluster).to_string(index=False))
